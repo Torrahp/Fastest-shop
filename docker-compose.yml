@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # 1. บริการ Database
+  db:
+    image: postgres:16-alpine
+    container_name: shoe-shop-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: postgres
+    ports:
+      - "5435:5432" # แมพ Port ออกมาที่ 5435 (เพื่อไม่ให้ชนกับอันเก่าที่คุณเล่นอยู่)
+    volumes:
+      - postgres_data_new:/var/lib/postgresql/data # เก็บข้อมูลถาวร (ปิด container ข้อมูลไม่หาย)
+
+  # 2. บริการ App (Rust)
+  app:
+    build: . # สร้าง Image จาก Dockerfile ที่โฟลเดอร์ปัจจุบัน
+    container_name: shoe-shop-app
+    restart: always
+    ports:
+      - "8080:8080" # เข้าเว็บผ่าน port 8080
+    environment:
+      # ⚠️ จุดสำคัญ: เปลี่ยนจาก localhost เป็นชื่อ service "db"
+      DATABASE_URL: postgres://postgres:password123@db:5432/postgres
+      RUST_LOG: info
+    depends_on:
+      - db # บอกว่าต้องรอให้ Database ตื่นก่อนนะ ค่อยรัน App
+
+# พื้นที่เก็บข้อมูลถาวร
+volumes:
+  postgres_data_new:

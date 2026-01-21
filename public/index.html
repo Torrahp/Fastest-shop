@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RunFast Shop - ช้อปปิ้ง</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f8f9fa; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Layout แบ่งซ้ายขวา */
+        .main-content { flex: 3; padding: 20px; overflow-y: auto; }
+        .cart-sidebar { flex: 1; background: white; padding: 20px; box-shadow: -2px 0 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        
+        header { background: #2f3542; color: white; padding: 1rem; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-logout { background: #ff4757; color: white; text-decoration: none; padding: 5px 15px; border-radius: 5px; font-size: 0.9rem; }
+
+        /* Grid สินค้า */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+        .card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .card-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+        .card-body { padding: 15px; text-align: center; }
+        .price { color: #2ed573; font-weight: bold; font-size: 1.2rem; }
+        .btn-buy { background: #3742fa; color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; margin-top: 10px; width: 100%; }
+        .btn-buy:active { transform: scale(0.95); }
+
+        /* ส่วนตะกร้าสินค้า */
+        .cart-items { flex-grow: 1; overflow-y: auto; border-top: 1px solid #eee; margin-top: 10px; padding-top: 10px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 10px; background: #f1f2f6; border-radius: 5px; }
+        .cart-total { font-size: 1.5rem; font-weight: bold; text-align: right; margin-top: 20px; color: #2f3542; }
+        .btn-checkout { background: #2ed573; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+        .btn-checkout:hover { background: #26af61; }
+    </style>
+</head>
+<body>
+
+    <div class="main-content">
+        <header>
+            <h1>👟 RunFast Shop</h1>
+            <a href="/" class="btn-logout">ออกจากระบบ</a>
+        </header>
+
+        <div class="product-grid">
+            <div class="card">
+                <img src="images/adidas-adizero-adios-pro-4-white-black-1.jpg" class="card-img">
+                <div class="card-body">
+                    <h3>adidas adizero adios pro 4</h3>
+                    <p class="price">฿8,000</p>
+                    <button class="btn-buy" onclick="addToCart('adidas adizero adios pro 4', 8000)">+ ใส่ตะกร้า</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="images/adidas-adizero-adios-pro-evo-2-cloud-white-1.jpg" class="card-img">
+                <div class="card-body">
+                    <h3>adidas adizero adios pro evo 2</h3>
+                    <p class="price">฿20,000</p>
+                    <button class="btn-buy" onclick="addToCart('Cloud Runner', 20000)">+ ใส่ตะกร้า</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="images/adidas-adizero-evo-sl-white-1.jpg" class="card-img">
+                <div class="card-body">
+                    <h3>adidas adizero evo sl</h3>
+                    <p class="price">฿5,800</p>
+                    <button class="btn-buy" onclick="addToCart('adidas adizero evo sl', 5800)">+ ใส่ตะกร้า</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="images/adidas-adizero-takumi-sen-11-cloud-white-core-black-lucid-red-1.jpg" class="card-img">
+                <div class="card-body">
+                    <h3>takumi sen 11</h3>
+                    <p class="price">฿6,700</p>
+                    <button class="btn-buy" onclick="addToCart('takumi sen 11', 6700)">+ ใส่ตะกร้า</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cart-sidebar">
+        <h2>🛒 ตะกร้าสินค้า</h2>
+        <div id="cartItems" class="cart-items">
+            <p style="text-align:center; color:#aaa;">ยังไม่มีสินค้าในตะกร้า</p>
+        </div>
+        <div class="cart-total">รวม: <span id="totalPrice">0</span> บาท</div>
+        <button class="btn-checkout" onclick="checkout()">ชำระเงิน</button>
+    </div>
+
+    <script>
+        let cart = [];
+        
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            renderCart();
+        }
+
+        function renderCart() {
+            const cartDiv = document.getElementById('cartItems');
+            const totalSpan = document.getElementById('totalPrice');
+            cartDiv.innerHTML = '';
+            let total = 0;
+            cart.forEach((item) => {
+                total += item.price;
+                cartDiv.innerHTML += `
+                    <div class="cart-item">
+                        <span>${item.name}</span>
+                        <span>฿${item.price.toLocaleString()}</span>
+                    </div>`;
+            });
+            totalSpan.innerText = total.toLocaleString();
+        }
+
+        // 🟢 ฟังก์ชันใหม่: ส่งข้อมูลไปหา Rust
+        async function checkout() {
+            if (cart.length === 0) { alert("ตะกร้าว่างเปล่า!"); return; }
+
+            // ยิงข้อมูลไปหา Rust ที่ /checkout
+            const response = await fetch('/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cart)
+            });
+
+            if (response.ok) {
+                alert("✅ ชำระเงินสำเร็จ!");
+                cart = []; // ล้างตะกร้า
+                renderCart(); // รีเซ็ตหน้าจอ
+            } else {
+                alert("❌ มีข้อผิดพลาด");
+            }
+        }
+    </script>
+</body>
+</html>
