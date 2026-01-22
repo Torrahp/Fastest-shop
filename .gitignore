@@ -1,0 +1,26 @@
+# โฟลเดอร์ที่เกิดจากการ Compile (หนักมาก ห้ามเอาขึ้น)
+target/
+
+# ไฟล์ Database ของเรา (ห้ามเอาขึ้น)
+postgres_data/
+postgres_data_new/
+
+# ไฟล์ขยะของระบบ
+**/*.rs.bk
+*.swp
+.DS_Store
+
+# (Optional) ถ้าอนาคตเราใช้ .env เก็บความลับ ก็ควรใส่ไว้ด้วย
+.env
+
+# ไม่เอาโฟลเดอร์ระบบและ Dependencies
+.terraform/
+node_modules/
+target/
+
+# ไม่เอาไฟล์สถานะของ Terraform (อาจมีความลับ)
+*.tfstate
+*.tfstate.backup
+
+# ไม่เอาไฟล์ Error log
+*.log
